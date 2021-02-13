@@ -3,24 +3,37 @@ import axios from "axios"
 
 
 const Card = (article) => {
-  const cardDiv = document.createElement('div')
-  const headline = document.createElement('div')
-  const author = document.createElement('div')
-  const imgContainer = document.createElement('div')
-  const image = document.createElement('img')
-  const closer = document.createElement('span')
+  const card = document.createElement('card');
+  const headline = document.createElement('div');
+  const author = document.createElement('div');
+  const imgContainer = document.createElement('div');
+  const img = document.createElement('img');
+  const span = document.createElement('span');
+  const id = document.createElement('id');
+ 
+  card.classList.add('card');
+  headline.classList.add('headline');
+  author.classList.add('author');
+  imgContainer.classList.add('img-container');
+  id.classList.add(article.id)
 
-  cardDiv.classList.add('card')
-  headline.classList.add('headline')
-  author.classList.add('author')
-  imgContainer.classList.add('img-container')
-  image.src = article.authorPhoto;
+  img.src = article.authorPhoto;
 
-  cardDiv.appendChild(headline)
-  cardDiv.appendChild(author)
-  author.appendChild(imgContainer)
-  imgContainer.appendChild(image)
-  author.appendChild(closer)
+  headline.textContent = article.headline;
+  span.textContent = `By ${article.authorName}`;
+ 
+  card.appendChild(headline);
+  card.appendChild(author);
+  author.appendChild(imgContainer);
+  imgContainer.appendChild(img);
+  author.appendChild(span);
+  card.appendChild(id);
+  
+  card.addEventListener('click', () => {
+   console.log(headline);
+  })
+  //! return 
+  return card;
 
   // TASK 5
   // ---------------------
@@ -44,45 +57,44 @@ const Card = (article) => {
 
 const cardAppender = (selector) => {
   axios
-  .get("https://lambda-times-api.herokuapp.com/articles")
-  .then((res) => {
-    const javascript = res.data.articles.javascript;
-    const bootstrap = res.data.articles.bootstrap;
-    const technology = res.data.articles.technology;
-    const node = res.data.articles.node;
-    const jquery = res.data.articles.jquery;
+  .get('https://lambda-times-api.herokuapp.com/articles')
+  .then(res => {
+    const select = document.querySelector(selector);
+     const arrayArticles = res.data.articles;
+    const javascript = arrayArticles.javascript;
+    const bootstrap = arrayArticles.bootstrap;
+    const technology = arrayArticles.technology;
+    const jquery = arrayArticles.jquery;
+    const node = arrayArticles.node;
 
-    const newSelector = document.querySelector(selector);
+    const take = document.querySelector('.cards-container');
+    console.log(take)
+    
+    javascript.forEach(item =>{
+      item.id =('javascript');
+      select.appendChild(Card(item))
 
-      javascript.forEach((item) => {
-        const newCard = Card(item);
-        newSelector.append(newCard);
-      })
-
-      bootstrap.forEach((item) => {
-        const newCard = Card(item);
-        newSelector.append(newCard);
-      })
-
-      technology.forEach((item) => {
-      const newCard = Card(item);
-      newSelector.append(newCard);
-})
-
-      jquery.forEach((item) => {
-        const newCard = Card(item);
-        newSelector.append(newCard);
-      })
-
-    node.forEach((item) => {
-      const newCard = Card(item);
-      newSelector.append(newCard);
     })
-
-
+    bootstrap.forEach(item =>{
+      item.id =('bootstrap');
+      select.appendChild(Card(item))
+    })
+    technology.forEach(item =>{
+      item.id =('technology');
+      select.appendChild(Card(item))
+    })
+    jquery.forEach(item =>{
+      item.id =('jquery');
+      select.appendChild(Card(item))
+    })
+    node.forEach(item =>{
+      item.id =('node');
+      select.appendChild(Card(item))
+    })
   })
-
-
+  .catch(err =>{
+    console.log(err);
+  })
 
   }
   // TASK 6
@@ -93,6 +105,6 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
-}
+
 
 export { Card, cardAppender }
